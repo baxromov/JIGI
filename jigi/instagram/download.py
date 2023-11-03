@@ -56,9 +56,9 @@ class Instagram(BaseGetURL):
             video_urls = [x for x in http_links if '.mp4' in x]
             if video_urls:
                 video_urls = [x.replace('amp;', '') for x in video_urls]
-                return video_urls, content
+                return video_urls
             else:
-                return None, None
+                return None
         except Exception as e:
             print(f"Error: {e}")
         finally:
