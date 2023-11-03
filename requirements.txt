@@ -1,0 +1,15 @@
+appdirs==1.4.4
+beautifulsoup4==4.12.2
+bs4==0.0.1
+certifi==2023.7.22
+colorama==0.4.6
+importlib-metadata==6.8.0
+lxml==4.9.3
+mpd-parser==0.1.2
+pyee==8.2.2
+pyppeteer==1.0.2
+soupsieve==2.5
+tqdm==4.66.1
+urllib3==1.26.18
+websockets==10.4
+zipp==3.17.0
