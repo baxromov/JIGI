@@ -1,15 +1,15 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='your-package-name',
+    name='jigi',
     version='1.0.0',
-    description='Your package description',
-    author='Your Name',
-    author_email='your@email.com',
+    description='JIGI',
+    author='Baxromov Shahzodbek',
+    author_email='baxromov.shahzodbek@gmail.com',
     url='https://github.com/baxromov/JIGI.git',
-    packages=['your_package'],
-    install_requires=required,  # This includes the dependencies from requirements.txt
+    packages=find_packages(),
+    install_requires=required
 )
