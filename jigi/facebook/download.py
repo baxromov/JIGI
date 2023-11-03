@@ -22,23 +22,24 @@ class Facebook(BaseGetURL):
         page_source = await self.page.content()
         return page_source
 
-    def __find_all_key_values(self, data, target_key: str = 'representations'):
+    def _find_all_key_values(self, data, target_key: str = 'representations'):
         results = []
         if isinstance(data, list):
             for item in data:
-                results.extend(self.__find_all_key_values(item, target_key))
+                results.extend(self._find_all_key_values(item, target_key))
         elif isinstance(data, dict):
             if target_key in data:
                 results.append(data[target_key])
             for value in data.values():
-                results.extend(self.__find_all_key_values(value, target_key))
+                results.extend(self._find_all_key_values(value, target_key))
         return results
 
-    def __categorize_urls(self, representations):
+    def _categorize_urls(self, representations):
         result = {}
 
-        resolutions = [360, 720, 1080]
-        audio = representations[3]
+        resolutions = list(filter(lambda x: x != 0, self._find_all_key_values(representations, 'height')))
+        n = list(filter(lambda x: x != 'audio/mp4', self._find_all_key_values(representations, 'mime_type')))
+        audio = representations[len(n)]
         for i, representation in enumerate(representations):
             if i < len(resolutions):
                 resolution = resolutions[i]
@@ -49,7 +50,7 @@ class Facebook(BaseGetURL):
 
         return result
 
-    def __process(self, url):
+    async def __process(self, url):
         await self._start_browser()
         page_source = await self._retrieve_content(url)
         soup = BeautifulSoup(page_source, 'html.parser')
@@ -57,8 +58,11 @@ class Facebook(BaseGetURL):
         data = list(map(lambda x: json.loads(x).get('require')[0], list(filter(lambda x: '"base_url":' in x, list(
             map(lambda x: x.text, list(filter(lambda x: '{"require":[[' in x.text, data))))))))
         await self._close_browser()
-        fk = self.__find_all_key_values(data)
-        return self.__categorize_urls(fk[0])
+        fk = self._find_all_key_values(data)
+        return self._categorize_urls(fk[0])
 
     async def getting_video_url(self, url):
-        return self.__process(url)
+        return await self.__process(url)
+
+    def _extract_urls_in_quotes(self, content):
+        ...

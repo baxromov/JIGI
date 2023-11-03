@@ -53,3 +53,28 @@
 #
 #     loop = asyncio.get_event_loop()
 #     loop.run_until_complete(main())
+
+import asyncio
+
+from jigi.facebook.download import Facebook
+from jigi.vk.download import VK
+
+if __name__ == '__main__':
+    pass
+    # async def main():
+        # url = "https://www.instagram.com/reel/Cy-T2kzAFAA/?igshid=MzRlODBiNWFlZA=="
+        # instagram = Instagram()
+        # result = await instagram.getting_video_url(url)
+        # print(result)
+        #
+        # url = 'https://www.facebook.com/100003184976981/videos/317042617709670/'
+        # facebook = Facebook()
+        # result = await facebook.getting_video_url(url)
+        # print(result)
+    #     url = "https://vk.com/video-55155418_456241422"
+    #     vk = VK()
+    #     result = await vk.getting_video_url(url)
+    #     print(result)
+    # loop = asyncio.get_event_loop()
+    # loop.run_until_complete(main())
+

@@ -45,10 +45,12 @@ class VK(BaseGetURL):
             await self._browser.close()
 
     async def _retrieve_content(self, url):
+        await self._start_browser()
         browser = self._browser
         page = await browser.newPage()
-        await page.goto(url, {'waitUntil': 'domcontentloaded'})
+        await page.goto(url)
         page_source = await page.content()
+        await self._close_browser()
         return page_source
 
     def _extract_urls_in_quotes(self, content):
@@ -66,9 +68,9 @@ class VK(BaseGetURL):
                 soup = BeautifulSoup(page_source, 'html.parser')
                 javascript_scripts = soup.find_all('script', type='text/javascript')
 
-                parsed_data_list = await asyncio.gather(
-                    *(self._extract_urls_in_quotes(script.text) for script in javascript_scripts)
-                )
+                parsed_data_list =[]
+                for script in javascript_scripts:
+                    parsed_data_list.append(self._extract_urls_in_quotes(script.text))
 
                 for parsed_data in parsed_data_list:
                     self.result_object.update(parsed_data)
