@@ -37,21 +37,21 @@ class VK(BaseGetURL):
         self.result_object = {}
         self.desired_keys = ["url240", "url360", "url480", "url720", "url1080"]
 
-    async def __start_browser(self):
+    async def _start_browser(self):
         self.browser = await launch()
 
-    async def __close_browser(self):
+    async def _close_browser(self):
         if self.browser:
             await self.browser.close()
 
-    async def __retrieve_content(self, url):
+    async def _retrieve_content(self, url):
         browser = self.browser
         page = await browser.newPage()
         await page.goto(url, {'waitUntil': 'domcontentloaded'})
         page_source = await page.content()
         return page_source
 
-    def __extract_urls_in_quotes(self, content):
+    def _extract_urls_in_quotes(self, content):
         parsed_data = {}
         for key in self.desired_keys:
             match = re.search(f'"{key}"\s*:\s*"([^"]*)"', content)
@@ -60,14 +60,14 @@ class VK(BaseGetURL):
         return parsed_data
 
     async def getting_video_url(self, url):
-        page_source = await self.__retrieve_content(url)
+        page_source = await self._retrieve_content(url)
         if page_source:
             try:
                 soup = BeautifulSoup(page_source, 'html.parser')
                 javascript_scripts = soup.find_all('script', type='text/javascript')
 
                 parsed_data_list = await asyncio.gather(
-                    *(self.__extract_urls_in_quotes(script.text) for script in javascript_scripts)
+                    *(self._extract_urls_in_quotes(script.text) for script in javascript_scripts)
                 )
 
                 for parsed_data in parsed_data_list:

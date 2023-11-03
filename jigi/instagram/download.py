@@ -26,16 +26,16 @@ class Instagram(BaseGetURL):
         """
     browser: Browser
 
-    async def __start_browser(self):
+    async def _start_browser(self):
         self.browser = await launch(headless=True)
 
-    async def __close_browser(self):
+    async def _close_browser(self):
         if self.browser:
             await self.browser.close()
 
-    async def __retrieve_content(self, url):
+    async def _retrieve_content(self, url):
         if not self.browser:
-            await self.__start_browser()
+            await self._start_browser()
 
         page = await self.browser.newPage()
         await page.goto(url)
@@ -43,15 +43,15 @@ class Instagram(BaseGetURL):
         content = await page.content()
         return content
 
-    def __extract_urls_in_quotes(self, content):
+    def _extract_urls_in_quotes(self, content):
         url_pattern = r'"(https?://[^"]+)"'
         all_urls = re.findall(url_pattern, content)
         return all_urls
 
     async def getting_video_url(self, url):
         try:
-            content = await self.__retrieve_content(url)
-            http_links = self.__extract_urls_in_quotes(content)
+            content = await self._retrieve_content(url)
+            http_links = self._extract_urls_in_quotes(content)
 
             video_urls = [x for x in http_links if '.mp4' in x]
             if video_urls:
@@ -62,4 +62,4 @@ class Instagram(BaseGetURL):
         except Exception as e:
             print(f"Error: {e}")
         finally:
-            await self.__close_browser()
+            await self._close_browser()

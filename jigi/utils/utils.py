@@ -3,19 +3,19 @@ from abc import ABC, abstractmethod
 
 class BaseGetURL(ABC):
     @abstractmethod
-    async def __start_browser(self):
+    async def _start_browser(self):
         pass
 
     @abstractmethod
-    async def __close_browser(self):
+    async def _close_browser(self):
         pass
 
     @abstractmethod
-    async def __retrieve_content(self, url):
+    async def _retrieve_content(self, url):
         pass
 
     @abstractmethod
-    def __extract_urls_in_quotes(self, content):
+    def _extract_urls_in_quotes(self, content):
         pass
 
     @abstractmethod

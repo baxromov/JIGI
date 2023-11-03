@@ -7,14 +7,14 @@ from jigi.utils.utils import BaseGetURL
 
 
 class Facebook(BaseGetURL):
-    async def __start_browser(self):
+    async def _start_browser(self):
         self.browser = await launch()
         self.page = await self.browser.newPage()
 
-    async def __close_browser(self):
+    async def _close_browser(self):
         await self.browser.close()
 
-    async def __retrieve_content(self, url):
+    async def _retrieve_content(self, url):
         await self.page.goto(url, {'waitUntil': 'domcontentloaded'})
         page_source = await self.page.content()
         return page_source
@@ -47,13 +47,13 @@ class Facebook(BaseGetURL):
         return result
 
     def __process(self, url):
-        await self.__start_browser()
-        page_source = await self.__retrieve_content(url)
+        await self._start_browser()
+        page_source = await self._retrieve_content(url)
         soup = BeautifulSoup(page_source, 'html.parser')
         data = soup.find_all('script', attrs={"type": "application/json"})
         data = list(map(lambda x: json.loads(x).get('require')[0], list(filter(lambda x: '"base_url":' in x, list(
             map(lambda x: x.text, list(filter(lambda x: '{"require":[[' in x.text, data))))))))
-        await self.__close_browser()
+        await self._close_browser()
         fk = self.__find_all_key_values(data)
         return self.__categorize_urls(fk[0])
 
