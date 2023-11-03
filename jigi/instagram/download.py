@@ -24,20 +24,20 @@ class Instagram(BaseGetURL):
         video_urls = await instagram.getting_video_url("https://www.instagram.com/p/Cy0b81yRaXs/?utm_source=ig_web_copy_link")
         print(video_urls)  # Display the video metadata dictionary.
         """
-    browser: Browser
+    _browser: Browser = None
 
     async def _start_browser(self):
-        self.browser = await launch(headless=True)
+        self._browser = await launch(headless=True)
 
     async def _close_browser(self):
-        if self.browser:
-            await self.browser.close()
+        if self._browser:
+            await self._browser.close()
 
     async def _retrieve_content(self, url):
-        if not self.browser:
+        if not self._browser:
             await self._start_browser()
 
-        page = await self.browser.newPage()
+        page = await self._browser.newPage()
         await page.goto(url)
         await page.waitForSelector('video')
         content = await page.content()

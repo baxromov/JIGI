@@ -31,21 +31,21 @@ class VK(BaseGetURL):
     video_urls = await extractor.getting_video_url("https://vk.com/video-12345678_98765432")
     print(video_urls)  # Display the video metadata dictionary.
     """
-    browser: Browser
+    _browser: Browser = None
 
     def __init__(self):
         self.result_object = {}
         self.desired_keys = ["url240", "url360", "url480", "url720", "url1080"]
 
     async def _start_browser(self):
-        self.browser = await launch()
+        self._browser = await launch()
 
     async def _close_browser(self):
-        if self.browser:
-            await self.browser.close()
+        if self._browser:
+            await self._browser.close()
 
     async def _retrieve_content(self, url):
-        browser = self.browser
+        browser = self._browser
         page = await browser.newPage()
         await page.goto(url, {'waitUntil': 'domcontentloaded'})
         page_source = await page.content()

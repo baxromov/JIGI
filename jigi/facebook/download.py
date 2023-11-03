@@ -2,17 +2,20 @@ import json
 
 from bs4 import BeautifulSoup
 from pyppeteer import launch
+from pyppeteer.browser import Browser
 
 from jigi.utils.utils import BaseGetURL
 
 
 class Facebook(BaseGetURL):
+    _browser: Browser = None
+
     async def _start_browser(self):
-        self.browser = await launch()
-        self.page = await self.browser.newPage()
+        self._browser = await launch()
+        self.page = await self._browser.newPage()
 
     async def _close_browser(self):
-        await self.browser.close()
+        await self._browser.close()
 
     async def _retrieve_content(self, url):
         await self.page.goto(url, {'waitUntil': 'domcontentloaded'})
