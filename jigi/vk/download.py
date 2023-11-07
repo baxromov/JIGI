@@ -62,19 +62,27 @@ class VK(BaseGetURL):
         return parsed_data
 
     async def getting_video_url(self, url):
-        page_source = await self._retrieve_content(url)
-        if page_source:
-            try:
+        try:
+            page_source = await self._retrieve_content(url)
+            soup = BeautifulSoup(page_source, 'html.parser')
+            if 'wall' in url:
+                url = soup.find_all('meta', property='og:url')[-1].attrs.get('content')
+                page_source = await self._retrieve_content(url)
                 soup = BeautifulSoup(page_source, 'html.parser')
-                javascript_scripts = soup.find_all('script', type='text/javascript')
+            if page_source:
+                try:
 
-                parsed_data_list =[]
-                for script in javascript_scripts:
-                    parsed_data_list.append(self._extract_urls_in_quotes(script.text))
+                    javascript_scripts = soup.find_all('script', type='text/javascript')
 
-                for parsed_data in parsed_data_list:
-                    self.result_object.update(parsed_data)
+                    parsed_data_list = []
+                    for script in javascript_scripts:
+                        parsed_data_list.append(self._extract_urls_in_quotes(script.text))
 
-            except Exception as e:
-                print(f"Error while parsing page source: {e}")
-        return self.result_object
+                    for parsed_data in parsed_data_list:
+                        self.result_object.update(parsed_data)
+
+                except Exception as e:
+                    print(f"Error while parsing page source: {e}")
+            return self.result_object
+        except Exception as e:
+            print(f"Error while getting video URL: {e}")
