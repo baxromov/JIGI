@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='jigi',
-    version='1.0.6',
+    version='1.0.7',
     description='JIGI',
     author='Baxromov Shahzodbek',
     author_email='baxromov.shahzodbek@gmail.com',
